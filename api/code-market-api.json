@@ -1,0 +1,1223 @@
+{
+  "gameVersion": "steam build 26723545",
+  "types": {
+    "Robot": {
+      "variable": "robot",
+      "methods": [
+        {
+          "name": "move",
+          "returns": "boolean",
+          "kind": "Action",
+          "params": [
+            {
+              "type": "Direction",
+              "name": "direction"
+            }
+          ],
+          "doc": "a step to the next tile; false if the way is blocked"
+        },
+        {
+          "name": "turn",
+          "returns": "void",
+          "kind": "Action",
+          "params": [
+            {
+              "type": "Direction",
+              "name": "direction"
+            }
+          ],
+          "doc": "turn on the spot to face this way, without leaving the tile"
+        },
+        {
+          "name": "getX",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "the robot's tile number along x"
+        },
+        {
+          "name": "getY",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "the robot's tile number along y"
+        },
+        {
+          "name": "getFacing",
+          "returns": "Direction",
+          "kind": "Query",
+          "params": [],
+          "doc": "which way the robot is facing"
+        },
+        {
+          "name": "getNumber",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "the robot's number: 1 for the first, 2 for the second; of the one running this code"
+        },
+        {
+          "name": "canMove",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "Direction",
+              "name": "direction"
+            }
+          ],
+          "doc": "whether the robot can step this way: there's a tile, it's free, and no customer or other robot is on it"
+        },
+        {
+          "name": "look",
+          "returns": "Entity",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "Direction",
+              "name": "direction"
+            }
+          ],
+          "doc": "what stands on the next tile this way; null if nothing"
+        },
+        {
+          "name": "isFacing",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "Entity",
+              "name": "entity"
+            }
+          ],
+          "doc": "whether this entity is right in front of the robot, on the tile it faces"
+        },
+        {
+          "name": "pick",
+          "returns": "boolean",
+          "kind": "Action",
+          "params": [
+            {
+              "type": "Product",
+              "name": "product"
+            }
+          ],
+          "doc": "take one item from the rack in front or, standing at the garage door, from the truck; false if that product isn't there or the hands are full"
+        },
+        {
+          "name": "getLoad",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "how many goods the robot is carrying now"
+        },
+        {
+          "name": "getCapacity",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "how many goods the robot can carry at once; raised in “Upgrades”"
+        },
+        {
+          "name": "has",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "Product",
+              "name": "product"
+            }
+          ],
+          "doc": "whether the robot is holding this product"
+        },
+        {
+          "name": "getCarried",
+          "returns": "List<Product>",
+          "kind": "Query",
+          "params": [],
+          "doc": "what the robot has in its hands now, one element per item, in the order it took them; an empty list if its hands are empty. It's a copy: changing it changes nothing in its hands"
+        },
+        {
+          "name": "getList",
+          "returns": "List<Product>",
+          "kind": "Query",
+          "params": [],
+          "doc": "the robot's own list, its notebook: the same on every run and saved with the game; the robot's panel shows it, and its List button edits it"
+        },
+        {
+          "name": "isAtPickup",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [],
+          "doc": "whether the robot stands on a pickup spot facing its rack; only then can it take from it or put on it (any next tile for a table, the front for shelves and fridges)"
+        },
+        {
+          "name": "getShelf",
+          "returns": "Shelf",
+          "kind": "Query",
+          "params": [],
+          "doc": "the rack (table, shelf, fridge) right in front of the robot; null if nothing holding goods is there"
+        },
+        {
+          "name": "putOnShelf",
+          "returns": "boolean",
+          "kind": "Action",
+          "params": [
+            {
+              "type": "Product",
+              "name": "product"
+            }
+          ],
+          "doc": "put a product from the hands onto the rack in front; false if it isn't in the hands or the rack is full. An error, which stops the program, if there's no rack in front or the rack is for another product"
+        },
+        {
+          "name": "isAtTruck",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [],
+          "doc": "whether the robot stands at the garage door facing it, with the truck there and open; then robot.pick takes goods from it"
+        },
+        {
+          "name": "getDelivery",
+          "returns": "List<Product>",
+          "kind": "Query",
+          "params": [],
+          "doc": "what's still in the truck, one element per item; an empty list if the robot isn't at the truck (robot.isAtTruck() checks that)"
+        },
+        {
+          "name": "isAtRegister",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [],
+          "doc": "whether the robot stands behind the register at its screen, facing it; orders are taken there"
+        },
+        {
+          "name": "getCustomer",
+          "returns": "Customer",
+          "kind": "Query",
+          "params": [],
+          "doc": "the customer waiting at the register whose screen the robot stands at; null if the robot isn't at a screen or nobody waits there. You can ask whether they're an adult: isAdult()"
+        },
+        {
+          "name": "takeOrder",
+          "returns": "Order",
+          "kind": "Action",
+          "params": [],
+          "doc": "take the order of the customer at this register; null if the robot isn't at the register's screen or nobody is waiting"
+        },
+        {
+          "name": "isAtBag",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [],
+          "doc": "whether the robot stands behind the register at the bag, facing it; goods go into the bag there"
+        },
+        {
+          "name": "putInBag",
+          "returns": "boolean",
+          "kind": "Action",
+          "params": [
+            {
+              "type": "Product",
+              "name": "product"
+            }
+          ],
+          "doc": "put a product from the hands into the customer's bag; false if the robot isn't at the bag, isn't holding it, or the customer doesn't need it"
+        }
+      ]
+    },
+    "Store": {
+      "variable": "store",
+      "methods": [
+        {
+          "name": "getWidth",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "the store's width in tiles: how many along x"
+        },
+        {
+          "name": "getHeight",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "the store's depth in tiles: how many along y, from the front wall to the back one"
+        },
+        {
+          "name": "isFree",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "int",
+              "name": "x"
+            },
+            {
+              "type": "int",
+              "name": "y"
+            }
+          ],
+          "doc": "whether tile (x, y) is free: it's in the store and nothing stands on it"
+        },
+        {
+          "name": "getEntity",
+          "returns": "Entity",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "int",
+              "name": "x"
+            },
+            {
+              "type": "int",
+              "name": "y"
+            }
+          ],
+          "doc": "what stands on tile (x, y); null if nothing. Outside the store it's null too, with no error, so keep x from 0 to getWidth() − 1 and y from 0 to getHeight() − 1"
+        },
+        {
+          "name": "getCashierCell",
+          "returns": "Cell",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "int",
+              "name": "x"
+            },
+            {
+              "type": "int",
+              "name": "y"
+            }
+          ],
+          "doc": "where to stand to take orders at the register on tile (x, y), its screen or its bag: the tile behind the screen, across from the customer. Face store.getRegisterSide(x, y) there. null if there's no register on (x, y) or something stands behind the screen"
+        },
+        {
+          "name": "getPackerCell",
+          "returns": "Cell",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "int",
+              "name": "x"
+            },
+            {
+              "type": "int",
+              "name": "y"
+            }
+          ],
+          "doc": "where to stand to put goods in the bag of the register on tile (x, y): the tile behind the bag. Face store.getRegisterSide(x, y) there. null if there's no register on (x, y) or something stands behind the bag"
+        },
+        {
+          "name": "getRegisterSide",
+          "returns": "Direction",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "int",
+              "name": "x"
+            },
+            {
+              "type": "int",
+              "name": "y"
+            }
+          ],
+          "doc": "which way to face behind the register on tile (x, y), the same at the screen and at the bag: toward the register, where the customer is. null if there's no register on (x, y)"
+        },
+        {
+          "name": "getRegisterNumber",
+          "returns": "int",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "int",
+              "name": "x"
+            },
+            {
+              "type": "int",
+              "name": "y"
+            }
+          ],
+          "doc": "the number of the register on tile (x, y), its screen or its bag: 1, 2, 3 or 4, as its panel shows. A register gets it when it's put up (the lowest free one) and keeps it wherever it's moved. 0 if there's no register on the tile"
+        },
+        {
+          "name": "getStock",
+          "returns": "int",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "int",
+              "name": "x"
+            },
+            {
+              "type": "int",
+              "name": "y"
+            }
+          ],
+          "doc": "how many goods are on what stands on tile (x, y); 0 if there are none, and if the tile is outside the store"
+        },
+        {
+          "name": "find",
+          "returns": "Cell",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "Entity",
+              "name": "entity"
+            }
+          ],
+          "doc": "the first tile where this entity stands: rows in order of y, each row left to right; null if there's none"
+        },
+        {
+          "name": "findAll",
+          "returns": "List<Cell>",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "Entity",
+              "name": "entity"
+            }
+          ],
+          "doc": "every tile where this entity stands, in the same order; both tiles of a two-tile entity (a bread rack). A register's tiles differ: the screen is REGISTER, the bag BAG"
+        },
+        {
+          "name": "getPickupDirections",
+          "returns": "List<Direction>",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "int",
+              "name": "x"
+            },
+            {
+              "type": "int",
+              "name": "y"
+            },
+            {
+              "type": "Product",
+              "name": "product"
+            }
+          ],
+          "doc": "which ways to face on tile (x, y) to take this product: usually one, both for a tile between two of its racks. An empty list if it can't be taken from here"
+        },
+        {
+          "name": "getHour",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "the hour in the game: 0 to 23 (a day is 10 real minutes)"
+        },
+        {
+          "name": "getMinute",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "the minutes: 0 to 59"
+        },
+        {
+          "name": "getDay",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "which day it is: 1, 2, …"
+        },
+        {
+          "name": "getSeason",
+          "returns": "Season",
+          "kind": "Query",
+          "params": [],
+          "doc": "the season now: Season.SUMMER, AUTUMN, WINTER or SPRING, 10 days each. Seasonal goods can only be ordered in their season"
+        },
+        {
+          "name": "getWaitingCustomer",
+          "returns": "Customer",
+          "kind": "Query",
+          "params": [],
+          "doc": "the customer at a register whose order nobody has taken yet, the one of them who'll leave first; null if nobody waits so. Wherever the robot is: customer.getPatience() tells whether it can get there in time"
+        },
+        {
+          "name": "getMoney",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "how much money the store has"
+        },
+        {
+          "name": "getBuyPrice",
+          "returns": "int",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "Product",
+              "name": "product"
+            }
+          ],
+          "doc": "what ordering one item of a product costs: half its price, less with “Buy-in discount”"
+        },
+        {
+          "name": "getTruckCapacity",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "how many goods fit in the truck: no more can be ordered in one delivery"
+        },
+        {
+          "name": "callDelivery",
+          "returns": "boolean",
+          "kind": "Action",
+          "params": [
+            {
+              "type": "List<Product>",
+              "name": "goods"
+            }
+          ],
+          "doc": "call the delivery: the truck brings these goods, one item per element of the list; they're paid for at once. Seasonal goods out of their season won't come, and the order costs a $10 fine per such item. false if the truck is busy now, the list is empty or there isn't enough money; the note over the robot says why. More than fits in the truck is an error: such an order is split into parts"
+        },
+        {
+          "name": "getRemaining",
+          "returns": "int",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "Product",
+              "name": "product"
+            }
+          ],
+          "doc": "how many of this product from the delivery called haven't been taken out of the truck yet, while it comes and while it stands at the garage; 0 once it's all unloaded or no delivery was called. Like the order's getRemaining, for the truck"
+        },
+        {
+          "name": "isTruckHere",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [],
+          "doc": "whether the truck is at the garage. Just pulled up, it's still opening its door: robot.isAtTruck() tells whether goods can be taken yet"
+        },
+        {
+          "name": "isTruckAway",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [],
+          "doc": "whether the truck is free: not driving and not at the garage; only then can it be called"
+        },
+        {
+          "name": "getGarageX",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "x of the garage tile right at the door: standing on it facing the door, the robot takes goods from the truck. If something stands on one of the two tiles at the door, the other one"
+        },
+        {
+          "name": "getGarageY",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "y of that same tile at the garage door"
+        },
+        {
+          "name": "getGarageSide",
+          "returns": "Direction",
+          "kind": "Query",
+          "params": [],
+          "doc": "which way to face in the garage: toward the door"
+        },
+        {
+          "name": "sendTruckAway",
+          "returns": "boolean",
+          "kind": "Action",
+          "params": [],
+          "doc": "send the truck off without unloading it all: the money for what's left in it comes back (an empty truck leaves by itself); false if there's no truck at the garage"
+        }
+      ]
+    },
+    "Shelf": {
+      "variable": "shelf",
+      "methods": [
+        {
+          "name": "getProduct",
+          "returns": "Product",
+          "kind": "Query",
+          "params": [],
+          "doc": "which product lies on this rack; only it goes here"
+        },
+        {
+          "name": "getCount",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "how many goods are on the rack now. Only while the robot stands in front of it, or it's an error: stock is found out by going to look (from afar, store.getStock(x, y) with “Search”)"
+        },
+        {
+          "name": "getCapacity",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "how many goods the rack holds when it's full"
+        },
+        {
+          "name": "isFull",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [],
+          "doc": "whether the rack is full: nothing more fits. Only while the robot stands in front of it"
+        },
+        {
+          "name": "isEmpty",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [],
+          "doc": "whether the rack is empty: there's nothing to take. Only while the robot stands in front of it"
+        }
+      ]
+    },
+    "Cell": {
+      "variable": "cell",
+      "methods": [
+        {
+          "name": "getX",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "the tile number along x"
+        },
+        {
+          "name": "getY",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "the tile number along y"
+        },
+        {
+          "name": "equals",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "Object",
+              "name": "other"
+            }
+          ],
+          "doc": "whether it's the same tile: cell objects are compared with equals, not =="
+        }
+      ]
+    },
+    "Customer": {
+      "variable": "customer",
+      "methods": [
+        {
+          "name": "isAdult",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [],
+          "doc": "whether the customer is an adult. Children can't be sold alcohol or cigarettes (18+ goods, product.isAdultsOnly()): cross them off the order with order.remove, or each one in the bag costs a $150 fine"
+        },
+        {
+          "name": "getPatience",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "how many seconds the customer will still wait at the register for the order to be taken (robot.takeOrder()) before leaving. Once it's taken the number stops going down: they'll wait. Too few left, and there's no getting to the register in time"
+        }
+      ]
+    },
+    "Order": {
+      "variable": "order",
+      "methods": [
+        {
+          "name": "getProducts",
+          "returns": "List<Product>",
+          "kind": "Query",
+          "params": [],
+          "doc": "which products are in the order, each once, in the order the customer named them"
+        },
+        {
+          "name": "getCount",
+          "returns": "int",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "Product",
+              "name": "product"
+            }
+          ],
+          "doc": "how many of this product the customer wants; 0 if it isn't in the order"
+        },
+        {
+          "name": "getRemaining",
+          "returns": "int",
+          "kind": "Query",
+          "params": [
+            {
+              "type": "Product",
+              "name": "product"
+            }
+          ],
+          "doc": "how many of this product aren't in the bag yet"
+        },
+        {
+          "name": "getTotal",
+          "returns": "int",
+          "kind": "Query",
+          "params": [],
+          "doc": "how many items the order has in all"
+        },
+        {
+          "name": "isDone",
+          "returns": "boolean",
+          "kind": "Query",
+          "params": [],
+          "doc": "whether everything is in the bag; then the customer pays and leaves"
+        },
+        {
+          "name": "remove",
+          "returns": "boolean",
+          "kind": "Action",
+          "params": [
+            {
+              "type": "Product",
+              "name": "product"
+            }
+          ],
+          "doc": "cross this product off the order: every piece of it not in the bag yet (those already in stay and are paid for); the order's other products stay (removeRemaining() crosses off everything at once). false if there's nothing of it to cross off. When nothing is left to pack, the customer pays for the bag and leaves, or with an empty bag leaves with nothing"
+        },
+        {
+          "name": "removeRemaining",
+          "returns": "boolean",
+          "kind": "Action",
+          "params": [],
+          "doc": "cross off everything not in the bag yet, every product at once (what's in it stays and is paid for). false if there's nothing to cross off. The customer then pays for the bag and leaves, or with an empty bag leaves with nothing"
+        }
+      ]
+    }
+  },
+  "enums": {
+    "Direction": [
+      "UP",
+      "DOWN",
+      "LEFT",
+      "RIGHT"
+    ],
+    "Entity": [
+      "BREAD_SHELF",
+      "REGISTER",
+      "FRIDGE",
+      "PUMPKIN_TABLE",
+      "PLANT",
+      "BOXES",
+      "FLOWER",
+      "TOMATO_TABLE",
+      "BEER_FRIDGE",
+      "CIGARETTE_STAND",
+      "WINE_STAND",
+      "MILK_STAND",
+      "TULIP_COUNTER",
+      "HONEY_STALL",
+      "WATERMELON_TABLE",
+      "TANGERINE_TABLE",
+      "STRAWBERRY_STAND",
+      "EASTER_TABLE",
+      "FIREWORKS_STAND",
+      "TREE_STAND",
+      "SIGN_BOARD",
+      "PALM_TREE",
+      "FAN_PALM",
+      "MONSTERA",
+      "DRACAENA",
+      "MEAT_FRIDGE",
+      "TRUFFLE_FRIDGE",
+      "CAVIAR_FRIDGE",
+      "LOBSTER_FRIDGE",
+      "VENDING_MACHINE",
+      "POPCORN_MACHINE",
+      "COFFEE_MACHINE",
+      "CHRISTMAS_TREE",
+      "ICE_CREAM_COUNTER",
+      "JAM_TABLE",
+      "FERTILIZER_TABLE",
+      "MASK_STAND",
+      "WHISKY_CABINET",
+      "COGNAC_CABINET",
+      "AQUARIUM",
+      "WATER_COOLER",
+      "BALLOONS",
+      "FORTUNE_WHEEL",
+      "DAISIES",
+      "BAG"
+    ],
+    "Product": [
+      "TOMATO",
+      "PUMPKIN",
+      "BREAD",
+      "SODA",
+      "BEER",
+      "CIGARETTES",
+      "WINE",
+      "MILK",
+      "TULIPS",
+      "HONEY",
+      "WATERMELON",
+      "TANGERINE",
+      "STRAWBERRY",
+      "EASTERCAKE",
+      "FIREWORKS",
+      "TREE",
+      "STEAK",
+      "TRUFFLE",
+      "CAVIAR",
+      "LOBSTER",
+      "CHOCOLATE",
+      "POPCORN",
+      "COFFEE",
+      "ICECREAM",
+      "JAM",
+      "FERTILIZER",
+      "MASK",
+      "WHISKY",
+      "COGNAC"
+    ],
+    "Season": [
+      "SUMMER",
+      "AUTUMN",
+      "WINTER",
+      "SPRING"
+    ]
+  },
+  "productMethods": [
+    {
+      "name": "isAlcohol",
+      "returns": "boolean",
+      "doc": "whether it's alcohol: such goods can't be sold from 22:00 to 6:00"
+    },
+    {
+      "name": "isAdultsOnly",
+      "returns": "boolean",
+      "doc": "whether the product is for adults only (18+), alcohol and cigarettes: it can't be sold to children (customer.isAdult())"
+    },
+    {
+      "name": "isPremium",
+      "returns": "boolean",
+      "doc": "whether it's a premium product (steak, truffles): expensive, but only a few customers take it (“Premium demand” in “Upgrades”)"
+    },
+    {
+      "name": "isVending",
+      "returns": "boolean",
+      "doc": "whether it's sold from a vending machine (chocolate, popcorn, coffee): nobody orders it at a register; customers walk to the machine themselves, and the robot only keeps it filled"
+    },
+    {
+      "name": "isInfinite",
+      "returns": "boolean",
+      "doc": "whether it never runs out (coffee): its machine is never empty and never needs filling"
+    },
+    {
+      "name": "isElite",
+      "returns": "boolean",
+      "doc": "whether it's an elite good (caviar, lobster): dearer and rarer still than premium (“Elite demand” in “Upgrades”)"
+    },
+    {
+      "name": "getPrice",
+      "returns": "int",
+      "doc": "the product's price; customers pay it × the revenue multiplier (“Revenue” in “Upgrades”, and decor); buying it in costs half"
+    },
+    {
+      "name": "getName",
+      "returns": "String",
+      "doc": "the name in the game's language, for example “Beer”"
+    },
+    {
+      "name": "getRack",
+      "returns": "Entity",
+      "doc": "the rack the product lies on"
+    },
+    {
+      "name": "getSeason",
+      "returns": "Season",
+      "doc": "the product's season: it can only be ordered then; null for goods sold all year round"
+    },
+    {
+      "name": "isInSeason",
+      "returns": "boolean",
+      "doc": "whether it can be ordered now: it's sold all year round or it's in season. Out of season the delivery won't bring it, and the order costs a $10 fine per item"
+    }
+  ],
+  "products": [
+    {
+      "constant": "TOMATO",
+      "name": "Tomato",
+      "price": 6,
+      "rack": "TOMATO_TABLE",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "PUMPKIN",
+      "name": "Pumpkin",
+      "price": 9,
+      "rack": "PUMPKIN_TABLE",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "BREAD",
+      "name": "Bread",
+      "price": 13,
+      "rack": "BREAD_SHELF",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "SODA",
+      "name": "Soda",
+      "price": 15,
+      "rack": "FRIDGE",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "BEER",
+      "name": "Beer",
+      "price": 25,
+      "rack": "BEER_FRIDGE",
+      "season": null,
+      "isAlcohol": true,
+      "isAdultsOnly": true,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "CIGARETTES",
+      "name": "Cigarettes",
+      "price": 30,
+      "rack": "CIGARETTE_STAND",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": true,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "WINE",
+      "name": "Wine",
+      "price": 85,
+      "rack": "WINE_STAND",
+      "season": null,
+      "isAlcohol": true,
+      "isAdultsOnly": true,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "MILK",
+      "name": "Milk",
+      "price": 17,
+      "rack": "MILK_STAND",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "TULIPS",
+      "name": "Tulips",
+      "price": 80,
+      "rack": "TULIP_COUNTER",
+      "season": "SPRING",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "HONEY",
+      "name": "Honey",
+      "price": 45,
+      "rack": "HONEY_STALL",
+      "season": "AUTUMN",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "WATERMELON",
+      "name": "Watermelon",
+      "price": 32,
+      "rack": "WATERMELON_TABLE",
+      "season": "SUMMER",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "TANGERINE",
+      "name": "Tangerine",
+      "price": 30,
+      "rack": "TANGERINE_TABLE",
+      "season": "WINTER",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "STRAWBERRY",
+      "name": "Strawberries",
+      "price": 75,
+      "rack": "STRAWBERRY_STAND",
+      "season": "SUMMER",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "EASTERCAKE",
+      "name": "Easter cake",
+      "price": 50,
+      "rack": "EASTER_TABLE",
+      "season": "SPRING",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "FIREWORKS",
+      "name": "Fireworks",
+      "price": 55,
+      "rack": "FIREWORKS_STAND",
+      "season": "WINTER",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "TREE",
+      "name": "Christmas tree",
+      "price": 80,
+      "rack": "TREE_STAND",
+      "season": "WINTER",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "STEAK",
+      "name": "Marbled steak",
+      "price": 100,
+      "rack": "MEAT_FRIDGE",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": true,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "TRUFFLE",
+      "name": "Truffles",
+      "price": 125,
+      "rack": "TRUFFLE_FRIDGE",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": true,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "CAVIAR",
+      "name": "Black caviar",
+      "price": 180,
+      "rack": "CAVIAR_FRIDGE",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": true,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "LOBSTER",
+      "name": "Lobster",
+      "price": 260,
+      "rack": "LOBSTER_FRIDGE",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": true,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "CHOCOLATE",
+      "name": "Chocolate bar",
+      "price": 10,
+      "rack": "VENDING_MACHINE",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": true,
+      "isInfinite": false
+    },
+    {
+      "constant": "POPCORN",
+      "name": "Popcorn",
+      "price": 20,
+      "rack": "POPCORN_MACHINE",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": true,
+      "isInfinite": false
+    },
+    {
+      "constant": "COFFEE",
+      "name": "Coffee",
+      "price": 30,
+      "rack": "COFFEE_MACHINE",
+      "season": null,
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": true,
+      "isInfinite": true
+    },
+    {
+      "constant": "ICECREAM",
+      "name": "Ice cream",
+      "price": 65,
+      "rack": "ICE_CREAM_COUNTER",
+      "season": "SUMMER",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "JAM",
+      "name": "Jam",
+      "price": 30,
+      "rack": "JAM_TABLE",
+      "season": "AUTUMN",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "FERTILIZER",
+      "name": "Fertilizer",
+      "price": 35,
+      "rack": "FERTILIZER_TABLE",
+      "season": "SPRING",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "MASK",
+      "name": "Mask",
+      "price": 40,
+      "rack": "MASK_STAND",
+      "season": "AUTUMN",
+      "isAlcohol": false,
+      "isAdultsOnly": false,
+      "isPremium": false,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "WHISKY",
+      "name": "Whisky",
+      "price": 150,
+      "rack": "WHISKY_CABINET",
+      "season": null,
+      "isAlcohol": true,
+      "isAdultsOnly": true,
+      "isPremium": true,
+      "isElite": false,
+      "isVending": false,
+      "isInfinite": false
+    },
+    {
+      "constant": "COGNAC",
+      "name": "Cognac",
+      "price": 220,
+      "rack": "COGNAC_CABINET",
+      "season": null,
+      "isAlcohol": true,
+      "isAdultsOnly": true,
+      "isPremium": false,
+      "isElite": true,
+      "isVending": false,
+      "isInfinite": false
+    }
+  ],
+  "entityNotes": {
+    "REGISTER": "A register with a screen and a scanner. This is the screen's tile; the register's second tile, with the bag, is `Entity.BAG` in code."
+  },
+  "starterProgram": "// Code Market: drive the robot with code!\n// Every line is a command to the robot\n// “Run” carries them out from the top down\n// Commands and examples: the “?” reference\n\nrobot.move(Direction.UP);\n"
+}

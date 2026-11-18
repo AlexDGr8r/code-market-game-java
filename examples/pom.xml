@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Starter project for writing Code Market robot programs in a real Java IDE.
+
+  You don't need to understand this file to get started: open the folder in your IDE, then edit
+  src/main/java/Main.java. Build with "./mvnw package" (macOS/Linux) or "mvnw.cmd package" (Windows)
+  to check that everything compiles.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Your project's name. Change these to whatever you like. -->
+    <groupId>com.example</groupId>
+    <artifactId>my-code-market-robot</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>My Code Market robot</name>
+
+    <properties>
+        <!-- Which version of the unofficial Code Market API library to use. -->
+        <code-market-game-api.version>0.1.0</code-market-game-api.version>
+
+        <!-- The game runs scripts on its own Java interpreter. Java 8 keeps your IDE from suggesting
+             newer syntax (like "var" or records) that may not work there. -->
+        <maven.compiler.release>8</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- The Code Market API: Robot, Store, Product and friends, with the game's own docs. -->
+        <dependency>
+            <groupId>io.github.alexdgr8r.codemarket</groupId>
+            <artifactId>code-market-game-api</artifactId>
+            <version>${code-market-game-api.version}</version>
+            <!-- "provided": only needed while writing code. The game has its own copy. -->
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.16.0</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:all,-options</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        # Oldest JDK the build supports, and the latest LTS a newcomer would install.
+        os: [ubuntu-latest, windows-latest]
+        java: [11, 25]
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} / JDK ${{ matrix.java }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+
+      # Each OS uses its own wrapper script, so both mvnw and mvnw.cmd get tested.
+      - name: Build library (Linux)
+        if: runner.os != 'Windows'
+        run: ./mvnw -B install
+
+      - name: Build library (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: mvnw.cmd -B install
+
+      - name: Build starter project against it (Linux)
+        if: runner.os != 'Windows'
+        working-directory: examples
+        run: ./mvnw -B package
+
+      - name: Build starter project against it (Windows)
+        if: runner.os == 'Windows'
+        working-directory: examples
+        shell: cmd
+        run: mvnw.cmd -B package
+
+      - name: Check the starter project uses this library's coordinates
+        if: runner.os != 'Windows'
+        run: |
+          mvn_eval() { ./mvnw -q -B "$@" org.apache.maven.plugins:maven-help-plugin:3.6.0:evaluate -DforceStdout; }
+          lib="$(mvn_eval -Dexpression=project.groupId):$(mvn_eval -Dexpression=project.version)"
+          starter="$(mvn_eval -f examples/pom.xml -Dexpression=project.dependencies[0].groupId):$(mvn_eval -f examples/pom.xml -Dexpression=code-market-game-api.version)"
+          echo "library: $lib  starter depends on: $starter"
+          if [ "$lib" != "$starter" ]; then
+            echo "::error file=examples/pom.xml::Starter project should depend on $lib, not $starter"
+            exit 1
+          fi
+
+      - name: Check the starter archive unpacks and builds
+        if: runner.os != 'Windows'
+        run: |
+          mkdir -p "$RUNNER_TEMP/starter"
+          tar -xzf target/code-market-starter-*.tar.gz -C "$RUNNER_TEMP/starter"
+          cd "$RUNNER_TEMP/starter/code-market-starter"
+          test -x mvnw
+          ./mvnw -B package
