@@ -3,16 +3,16 @@ package javax.codemarket;
 /**
  * Base class for a Code Market program. Extend it and write your program in {@link #main()}:
  *
- * <pre>{@code
+ * <pre>
  * import javax.codemarket.*;
  *
  * public class Main extends GameScript {
- *     @Override
+ *     &#64;Override
  *     protected void main() {
  *         robot.move(Direction.UP);
  *     }
  * }
- * }</pre>
+ * </pre>
  *
  * <p>To run it in the game, paste the file in and delete {@code extends GameScript}: the game has no
  * such class, but it does run {@code main()} and provides {@code robot} and {@code store} itself.

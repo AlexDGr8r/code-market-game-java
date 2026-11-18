@@ -1,5 +1,8 @@
 # Code Market Java API (unofficial)
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.alexdgr8r.codemarket/code-market-game-api)](https://central.sonatype.com/artifact/io.github.alexdgr8r.codemarket/code-market-game-api)
+[![CI](https://github.com/alexdgr8r/code-market-game-java/actions/workflows/ci.yml/badge.svg)](https://github.com/alexdgr8r/code-market-game-java/actions/workflows/ci.yml)
+
 Write your robot programs for the Steam game **[Code Market](https://store.steampowered.com/app/5451260/)**
 in a real Java IDE, like IntelliJ IDEA or VS Code, instead of the in-game editor. You get:
 
@@ -103,13 +106,10 @@ Things to know, checked against the game's own compiler:
 
 ## Adding the library to an existing project
 
-If you already have a Maven or Gradle project, add the library as a dependency. It's only needed at
-compile time (the game has its own copy), so use `provided` / `compileOnly`.
-
-> [!NOTE]
-> The library isn't on Maven Central yet. Until it is, build it from source and install it locally:
-> clone this repo and run `./mvnw install` (see [Building](#building)). Then add `mavenLocal()` to
-> your Gradle repositories.
+If you already have a Maven or Gradle project, add the library as a dependency. It's on
+[Maven Central](https://central.sonatype.com/artifact/io.github.alexdgr8r.codemarket/code-market-game-api),
+so there's nothing else to set up. It's only needed at compile time (the game has its own copy), so use
+`provided` / `compileOnly`.
 
 **Maven** (`pom.xml`):
 
@@ -125,6 +125,10 @@ compile time (the game has its own copy), so use `provided` / `compileOnly`.
 **Gradle** (`build.gradle.kts`):
 
 ```kotlin
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compileOnly("io.github.alexdgr8r.codemarket:code-market-game-api:0.1.0")
 }
@@ -169,7 +173,9 @@ Install a JDK (see [Quick start](#quick-start-the-starter-project)) and restart 
 still fails, set the `JAVA_HOME` environment variable to the JDK's install folder.
 
 **`Could not find artifact io.github...code-market-game-api`**
-The library isn't on Maven Central yet. Run `./mvnw install` in a clone of this repo first.
+Maven couldn't download the library. Check you're online and that the version number matches one on
+[Maven Central](https://central.sonatype.com/artifact/io.github.alexdgr8r.codemarket/code-market-game-api).
+A brand-new version can take an hour or so to show up there after a release.
 
 **`UnsupportedOperationException: ... only works inside Code Market`**
 You ran the program outside the game. That's expected: paste it into the game to run it.
